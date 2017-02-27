@@ -12,7 +12,8 @@ var env = {
 }
 
 var proxy = httpProxy.createProxyServer({
-  target: process.env.KIBANA_URL
+  target: process.env.KIBANA_URL,
+  prependPath: false
 });
 
 proxy.on('error', function(e) {
