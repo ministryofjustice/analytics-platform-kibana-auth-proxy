@@ -14,8 +14,7 @@ var env = {
 var proxy = httpProxy.createProxyServer({
   target: process.env.KIBANA_URL,
   prependPath: false,
-  changeOrigin: true,
-  auth: process.env.KIBANA_USERNAME + ':' + process.env.KIBANA_PASSWORD
+  changeOrigin: true
 });
 
 proxy.on('error', function(e) {
@@ -48,9 +47,20 @@ router.all('/favicon.ico', function(req, res, next) {
   proxy.web(req, res);
 });
 
+var kibanaAuthCredsFromRequest = function(req){
+  if(req.user.provider === 'google-oauth2'){
+    return process.env.KIBANA_ADMIN_USERNAME + ':'
+      + process.env.KIBANA_ADMIN_PASSWORD;
+  }else{
+    return process.env.KIBANA_USERNAME + ':' + process.env.KIBANA_PASSWORD;
+  }
+};
+
 /* Authenticate and proxy all other requests */
 router.all(/.*/, ensureLoggedIn, function(req, res, next) {
-  proxy.web(req, res);
+  proxy.web(req, res, {
+    auth: kibanaAuthCredsFromRequest(req)
+  });
 });
 
 
