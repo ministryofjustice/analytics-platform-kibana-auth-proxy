@@ -6,4 +6,4 @@ WORKDIR /app
 RUN npm install
 ADD . /app
 
-CMD ["node", "bin/www"]
+CMD ["node", "app/index.js"]

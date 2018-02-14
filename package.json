@@ -6,7 +6,7 @@
   "author": "Auth0",
   "license": "MIT",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./app/index.js"
   },
   "dependencies": {
     "body-parser": "~1.13.2",

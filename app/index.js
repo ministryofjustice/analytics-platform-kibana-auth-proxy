@@ -4,10 +4,11 @@
  * Module dependencies.
  */
 
-var app = require('../app');
 var debug = require('debug')('nodejs-regular-webapp2:server');
 var http = require('http');
 var httpProxy = require('http-proxy');
+
+let app = require('./app');
 
 /**
  * Get port from environment and store in Express.
