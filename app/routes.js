@@ -4,15 +4,11 @@ var httpProxy = require('http-proxy');
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn()
 var router = express.Router();
 
-var env = {
-  AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
-  AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
-  AUTH0_CALLBACK_URL: process.env.AUTH0_CALLBACK_URL || 'http://localhost:3000/callback',
-  USER: process.env.USER,
-}
+const config = require('./config');
+
 
 var proxy = httpProxy.createProxyServer({
-  target: process.env.KIBANA_URL,
+  target: config.kibana.URL,
   prependPath: false,
   changeOrigin: true
 });
@@ -25,7 +21,7 @@ proxy.on('error', function(e) {
 /* Handle login */
 router.get('/login',
   function(req, res){
-    res.render('login', { env: env });
+    res.render('login', { auth0: config.auth0 });
   }
 );
 
@@ -48,11 +44,10 @@ router.all('/favicon.ico', function(req, res, next) {
 });
 
 var kibanaAuthCredsFromRequest = function(req){
-  if(req.user.provider === 'google-oauth2'){
-    return process.env.KIBANA_ADMIN_USERNAME + ':'
-      + process.env.KIBANA_ADMIN_PASSWORD;
-  }else{
-    return process.env.KIBANA_USERNAME + ':' + process.env.KIBANA_PASSWORD;
+  if (req.user.provider === 'google-oauth2') {
+    return config.kibana.adminCreds;
+  } else {
+    return config.kibana.creds;
   }
 };
 

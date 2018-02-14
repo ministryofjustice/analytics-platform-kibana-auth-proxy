@@ -8,13 +8,14 @@ var debug = require('debug')('nodejs-regular-webapp2:server');
 var http = require('http');
 var httpProxy = require('http-proxy');
 
-let app = require('./app');
+const app = require('./app');
+const config = require('./config');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(config.express.port);
 app.set('port', port);
 
 /**
@@ -34,10 +35,7 @@ server.on('listening', onListening);
 /* Proxy websockets */
 
 var proxy = httpProxy.createProxyServer({
-  target: {
-      host: process.env.SHINY_HOST,
-      port: process.env.SHINY_PORT
-    }
+  target: config.shiny,
 });
 
 server.on('upgrade', function (req, socket, head) {

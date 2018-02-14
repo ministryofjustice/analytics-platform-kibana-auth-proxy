@@ -6,12 +6,12 @@ block content
   div(id="root" style="width: 280px; margin: 40px auto; padding: 10px;")
 
   script.
-    var lock = new Auth0Lock('#{env.AUTH0_CLIENT_ID}', '#{env.AUTH0_DOMAIN}', {
+    var lock = new Auth0Lock('#{auth0.clientID}', '#{auth0.domain}', {
         auth: {
-          redirectUrl: '#{env.AUTH0_CALLBACK_URL}',
+          redirectUrl: '#{auth0.callbackURL}',
           responseType: 'code',
           params: {
-            scope: 'openid profile' // Learn about scopes: https://auth0.com/docs/scopes
+            scope: '#{auth0.scope}'
           }
         },
         closable: false,

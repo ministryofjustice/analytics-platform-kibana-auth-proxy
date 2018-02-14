@@ -8,15 +8,13 @@ var session = require('express-session');
 var passport = require('passport');
 var Auth0Strategy = require('passport-auth0');
 
+var config = require('./config');
 var routes = require('./routes');
 
 // This will configure Passport to use Auth0
-var strategy = new Auth0Strategy({
-    domain:       process.env.AUTH0_DOMAIN,
-    clientID:     process.env.AUTH0_CLIENT_ID,
-    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL:  process.env.AUTH0_CALLBACK_URL || 'http://localhost:3000/callback'
-  }, function(accessToken, refreshToken, extraParams, profile, done) {
+var strategy = new Auth0Strategy(
+  config.auth0,
+  (accessToken, refreshToken, extraParams, profile, done) => {
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
     // profile has all the information from the user
@@ -42,11 +40,7 @@ app.set('view engine', 'pug');
 
 app.use(logger('combined'));
 app.use(cookieParser());
-app.use(session({
-  secret: process.env.COOKIE_SECRET,
-  resave: true,
-  saveUninitialized: true
-}));
+app.use(session(config.session));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
