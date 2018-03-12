@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 
+require('dotenv').config();
+
 var debug = require('debug')('nodejs-regular-webapp2:server');
 var http = require('http');
 var httpProxy = require('http-proxy');

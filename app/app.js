@@ -4,21 +4,28 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
-var Auth0Strategy = require('passport-auth0');
+var Auth0Strategy = require('passport-auth0-openidconnect').Strategy;
 
 var config = require('./config');
 var routes = require('./routes');
 
 // This will configure Passport to use Auth0
-var strategy = new Auth0Strategy(
+const strategy = new Auth0Strategy(
   config.auth0,
-  (accessToken, refreshToken, extraParams, profile, done) => {
-    // accessToken is the token to call Auth0 API (not needed in the most cases)
-    // extraParams.id_token has the JSON Web Token
-    // profile has all the information from the user
-    return done(null, profile);
-  });
+  ((req, issuer, audience, profile, accessToken, refreshToken, params, callback) => {
 
+    req.session.id_token = params.id_token;
+
+    return callback(null, profile._json);
+  }),
+);
+// Original implementation in `passport-openidconnect` ignore options by
+// returning `{}`.
+//
+// `passport-auth0-openidconnect` is supposed to override it but it doesn't.
+//
+// See: https://github.com/siacomuzzi/passport-openidconnect/blob/master/lib/strategy.js#L338
+Auth0Strategy.prototype.authorizationParams = (options) => options;
 passport.use(strategy);
 
 // you can use this section to keep a smaller payload
