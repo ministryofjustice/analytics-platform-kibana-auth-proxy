@@ -1,7 +1,6 @@
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
 var Auth0Strategy = require('passport-auth0-openidconnect').Strategy;
@@ -40,7 +39,6 @@ passport.deserializeUser(function(user, done) {
 var app = express();
 
 app.use(logger('combined'));
-app.use(cookieParser());
 app.use(session(config.session));
 app.use(passport.initialize());
 app.use(passport.session());
