@@ -65,7 +65,9 @@ router.all('/favicon.ico', function(req, res, next) {
 });
 
 var kibanaAuthCredsFromRequest = function(req){
-  if (req.user.provider === 'google-oauth2') {
+  const provider = req.user.sub.split('|')[0];
+
+  if (provider === 'google-oauth2') {
     return config.kibana.adminCreds;
   } else {
     return config.kibana.creds;
