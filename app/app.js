@@ -11,9 +11,9 @@ const routes = require('./routes');
 
 const strategy = new Auth0Strategy(
   config.auth0,
-  ((req, issuer, audience, profile, accessToken, refreshToken, params, callback) => {
+  (issuer, audience, profile, callback) => {
     return callback(null, profile._json);
-  }),
+  },
 );
 // Original implementation in `passport-openidconnect` ignore options by
 // returning `{}`.

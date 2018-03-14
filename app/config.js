@@ -14,7 +14,6 @@ config.auth0 = {
   scope: 'profile',
   sso_logout_url: '/v2/logout',
   prompt: 'none',
-  passReqToCallback: true,
 };
 
 config.express = {
