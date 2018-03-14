@@ -64,14 +64,14 @@ router.all('/favicon.ico', function(req, res, next) {
   proxy.web(req, res);
 });
 
-var kibanaAuthCredsFromRequest = function(req){
+function kibanaAuthCredsFromRequest(req) {
   const provider = req.user.sub.split('|')[0];
 
   if (provider === 'google-oauth2') {
     return config.kibana.adminCreds;
-  } else {
-    return config.kibana.creds;
   }
+
+  return config.kibana.creds;
 };
 
 /* Authenticate and proxy all other requests */
