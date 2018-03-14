@@ -1,9 +1,9 @@
 {
   "name": "kibana-auth-proxy",
   "version": "1.0.0",
-  "description": "Auth0 Shiny proxy",
-  "repository": "git://github.com/auth0/shiny-auth0",
-  "author": "Auth0",
+  "description": "Kibana auth proxy",
+  "repository": "https://github.com/ministryofjustice/analytics-platform-kibana-auth-proxy",
+  "author": "MoJ Analytical Platform",
   "license": "MIT",
   "scripts": {
     "start": "node ./app/index.js"

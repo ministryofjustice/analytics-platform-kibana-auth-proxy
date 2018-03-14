@@ -37,9 +37,3 @@ config.kibana = {
   adminCreds: process.env.KIBANA_ADMIN_USERNAME + ':' + process.env.KIBANA_ADMIN_PASSWORD,
   creds: process.env.KIBANA_USERNAME + ':' + process.env.KIBANA_PASSWORD,
 }
-
-// TODO: Used for websockets, but not passed in?
-config.shiny = {
-  host: process.env.SHINY_HOST,
-  port: process.env.SHINY_PORT,
-}

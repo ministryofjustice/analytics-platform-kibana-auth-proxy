@@ -8,7 +8,6 @@ require('dotenv').config();
 
 const debug = require('debug')('nodejs-regular-webapp2:server');
 const http = require('http');
-const httpProxy = require('http-proxy');
 
 const app = require('./app');
 const config = require('./config');
@@ -33,19 +32,6 @@ const server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-/* Proxy websockets */
-
-const proxy = httpProxy.createProxyServer({
-  target: config.shiny,
-});
-
-server.on('upgrade', function (req, socket, head) {
-  //req.url = req.url.substring(8);
-  console.log('⚡️ ---------- SOCKET CONNECTION UPGRADING ---------- ⚡');
-  proxy.ws(req, socket, head);
-});
-
 
 /**
  * Normalize a port into a number, string, or false.
