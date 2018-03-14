@@ -1,8 +1,8 @@
-var express = require('express');
-var passport = require('passport');
-var httpProxy = require('http-proxy');
-var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn()
-var router = express.Router();
+const express = require('express');
+const passport = require('passport');
+const httpProxy = require('http-proxy');
+const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn()
+const router = express.Router();
 
 const config = require('./config');
 
@@ -11,7 +11,7 @@ const RETURN_TO = encodeURI(`${config.app.protocol}://${config.app.host}`);
 const SSO_LOGOUT_URL = `https://${config.auth0.domain}${config.auth0.sso_logout_url}?returnTo=${RETURN_TO}&client_id=${config.auth0.clientID}`;
 
 
-var proxy = httpProxy.createProxyServer({
+const proxy = httpProxy.createProxyServer({
   target: config.kibana.URL,
   prependPath: false,
   changeOrigin: true
@@ -29,7 +29,7 @@ router.get('/healthz', (req, res) => res.sendStatus(200));
 router.get('/login', (req, res, next) => {
   if (req.isAuthenticated()) {
     if (/^http/.test(req.session.returnTo)) {
-      var err = new Error('URL must be relative');
+      const err = new Error('URL must be relative');
       err.status = 400;
       next(err);
     } else {

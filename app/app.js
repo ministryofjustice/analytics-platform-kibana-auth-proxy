@@ -1,14 +1,14 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var session = require('express-session');
-var passport = require('passport');
-var Auth0Strategy = require('passport-auth0-openidconnect').Strategy;
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const session = require('express-session');
+const passport = require('passport');
+const Auth0Strategy = require('passport-auth0-openidconnect').Strategy;
 
-var config = require('./config');
-var routes = require('./routes');
+const config = require('./config');
+const routes = require('./routes');
 
-// This will configure Passport to use Auth0
+
 const strategy = new Auth0Strategy(
   config.auth0,
   ((req, issuer, audience, profile, accessToken, refreshToken, params, callback) => {
@@ -24,7 +24,6 @@ const strategy = new Auth0Strategy(
 Auth0Strategy.prototype.authorizationParams = (options) => options;
 passport.use(strategy);
 
-// you can use this section to keep a smaller payload
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -33,7 +32,7 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
-var app = express();
+const app = express();
 
 app.use(logger('combined'));
 app.use(session(config.session));
@@ -42,14 +41,11 @@ app.use(passport.session());
 
 app.use('/', routes);
 
-// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
-
-// error handler
 
 app.use(function(err, req, res, next) {
   response = { 'error': err.message };
