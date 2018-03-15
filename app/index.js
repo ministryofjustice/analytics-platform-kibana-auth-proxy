@@ -4,23 +4,26 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('nodejs-regular-webapp2:server');
-var http = require('http');
-var httpProxy = require('http-proxy');
+require('dotenv').config();
+
+const debug = require('debug')('nodejs-regular-webapp2:server');
+const http = require('http');
+
+const app = require('./app');
+const config = require('./config');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(config.express.port);
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -30,28 +33,12 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-/* Proxy websockets */
-
-var proxy = httpProxy.createProxyServer({
-  target: {
-      host: process.env.SHINY_HOST,
-      port: process.env.SHINY_PORT
-    }
-});
-
-server.on('upgrade', function (req, socket, head) {
-  //req.url = req.url.substring(8);
-  console.log('⚡️ ---------- SOCKET CONNECTION UPGRADING ---------- ⚡');
-  proxy.ws(req, socket, head);
-});
-
-
 /**
  * Normalize a port into a number, string, or false.
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -75,7 +62,7 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  const bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -99,8 +86,8 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+  const addr = server.address();
+  const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
