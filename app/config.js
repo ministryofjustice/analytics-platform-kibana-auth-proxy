@@ -13,7 +13,6 @@ config.auth0 = {
   domain: process.env.AUTH0_DOMAIN,
   scope: 'profile',
   sso_logout_url: '/v2/logout',
-  prompt: 'none',
 };
 
 config.express = {
