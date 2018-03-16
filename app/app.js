@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
+const { ManagementClient } = require('auth0');
 const session = require('express-session');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0-openidconnect').Strategy;
@@ -11,8 +12,21 @@ const routes = require('./routes');
 
 const strategy = new Auth0Strategy(
   config.auth0,
-  (issuer, audience, profile, callback) => {
-    return callback(null, profile._json);
+
+  function(req, issuer, audience, profile, accessToken, refreshToken, params, callback) {
+    const management_client = new ManagementClient({
+      token: params.id_token,
+      domain: config.auth0.domain,
+    });
+
+    management_client
+      .getUser({ id: profile.id })
+      .then((user_profile) => {
+        return callback(null, user_profile);
+      })
+      .catch((err) => {
+          return callback(err, null);
+      });
   },
 );
 // Original implementation in `passport-openidconnect` ignore options by
