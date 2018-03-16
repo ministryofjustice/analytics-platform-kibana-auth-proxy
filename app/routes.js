@@ -61,10 +61,17 @@ router.all('/favicon.ico', function(req, res, next) {
   proxy.web(req, res);
 });
 
-function kibanaAuthCredsFromRequest(req) {
-  const provider = req.user.user_id.split('|')[0];
+function kibanaAuthCredsForUser(user) {
+  let is_admin = false;
 
-  if (provider === 'google-oauth2') {
+  try {
+    const groups = user.app_metadata.authorization.groups;
+    is_admin = groups.indexOf('cluster-admins') !== -1;
+  } catch (e) {
+    // is_admin is false if couldn't read groups
+  }
+
+  if (is_admin) {
     return config.kibana.adminCreds;
   }
 
@@ -74,7 +81,7 @@ function kibanaAuthCredsFromRequest(req) {
 /* Authenticate and proxy all other requests */
 router.all(/.*/, ensureLoggedIn, function(req, res, next) {
   proxy.web(req, res, {
-    auth: kibanaAuthCredsFromRequest(req)
+    auth: kibanaAuthCredsForUser(req.user),
   });
 });
 
